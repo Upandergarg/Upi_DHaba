@@ -1,0 +1,113 @@
+{% extends "admin_dashboard.html" %}
+
+{% block main %}
+<style>
+    /* Ensures content does not overlap with the sidebar */
+    .content-wrapper {
+        margin-left: 260px;
+        padding: 20px;
+    }
+
+    /* Card Styling */
+    .card {
+        border-radius: 12px;
+        transition: 0.3s ease-in-out;
+        border: none;
+    }
+
+    .card:hover {
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+        transform: scale(1.02);
+    }
+
+    .card-title {
+        font-weight: bold;
+        color: #007bff;
+    }
+
+    /* Status Badge */
+    .badge {
+        font-size: 14px;
+        padding: 5px 10px;
+        border-radius: 6px;
+    }
+
+    /* Button Styling */
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        font-weight: bold;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    /* Form Input */
+    .form-control {
+        border-radius: 8px;
+    }
+
+    /* Ensure equal height for order cards */
+    .order-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+</style>
+
+<div class="content-wrapper">
+    <div class="container mt-4">
+        <h2 class="mb-4 text-center text-primary">Orders Management</h2>
+
+        <div class="row d-flex justify-content-center" style="width: 45vw !important;">
+            {% for order in orders %}
+            <div class="col-md-6 mb-4" >
+                <div class="card shadow-sm p-3 order-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Order ID: {{ order.id }}</h5>
+                        <p><strong>Customer:</strong> {{ order.user.name }} <br>
+                           <strong>Email:</strong> {{ order.user.email }} <br>
+                           <strong>Address:</strong> {{ current_user.address }}</p>
+                        <p><strong>Status:</strong> 
+                            <span class="badge {% if order.status == 'Delivered' %} bg-success 
+                                {% elif order.status == 'Out for Delivery' %} bg-info 
+                                {% elif order.status == 'Being Prepared' %} bg-warning 
+                                {% else %} bg-secondary {% endif %}">
+                                {{ order.status }}
+                            </span>
+                        </p>
+
+                        <hr>
+                        <h6><strong>Ordered Items:</strong></h6>
+                        <ul class="list-group mb-3">
+                            {% for item in order.order_items %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ item.menu_item.name }} (x{{ item.quantity }})
+                                <span class="badge bg-primary rounded-pill">₹{{ item.price }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+
+                        <p class="text-end"><strong>Total Price: ₹{{ order.total_price }}</strong></p>
+
+                        <!-- Order Status Update Form -->
+                        <form action="{{ url_for('update_order_status', order_id=order.id) }}" method="post">
+                            <label for="status" class="form-label"><strong>Update Status:</strong></label>
+                            <select name="status" class="form-control">
+                                <option value="Pending" {% if order.status == 'Pending' %} selected {% endif %}>Pending</option>
+                                <option value="Accepted" {% if order.status == 'Accepted' %} selected {% endif %}>Accepted</option>
+                                <option value="Being Prepared" {% if order.status == 'Being Prepared' %} selected {% endif %}>Being Prepared</option>
+                                <option value="Out for Delivery" {% if order.status == 'Out for Delivery' %} selected {% endif %}>Out for Delivery</option>
+                                <option value="Delivered" {% if order.status == 'Delivered' %} selected {% endif %}>Delivered</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary mt-3 w-100">Update Status</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

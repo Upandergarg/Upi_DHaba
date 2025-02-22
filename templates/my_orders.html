@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block main %}
+<div class="container mt-5" style="margin-top:15vh !important;">
+    <h2 class="text-center text-primary">My Orders</h2>
+
+    {% if orders %}
+    <div class="table-responsive mt-4">
+        <table class="table table-hover table-bordered text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>Order ID</th>
+                    <th>Name</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr class="align-middle">
+                    <td><strong>#{{ order.id }}</strong></td>
+                    <td>{{ order.user.name }}</td>
+                    <td><span class="fw-bold text-success">₹{{ order.total_price }}</span></td>
+                    <td>
+                        <span class="badge 
+                            {% if order.status == 'Delivered' %} bg-success 
+                            {% elif order.status == 'Out for Delivery' %} bg-info 
+                            {% elif order.status == 'Being Prepared' %} bg-warning 
+                            {% else %} bg-secondary {% endif %}">
+                            {{ order.status }}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-info text-white fw-bold shadow view-order-btn"
+                                data-order-id="{{ order.id }}">
+                            View
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 🟢 Order Details Section (Hidden by Default) -->
+    <div id="order-details" class="mt-4 text-center d-none">
+        <div class="card shadow-lg mx-auto" style="max-width: 500px;">
+            <div class="card-body">
+                <h4 class="card-title">Order Details</h4>
+                <p><strong>Order ID:</strong> <span id="order-id"></span></p>
+                <p><strong>Customer:</strong> <span id="customer-name"></span></p>
+                <p><strong>Status:</strong> <span id="order-status" class="badge"></span></p>
+                <p><strong>Total Price:</strong> ₹<span id="order-price"></span></p>
+
+                <h5>Ordered Items:</h5>
+                <ul id="order-items" class="list-group mb-3"></ul>
+
+                <button class="btn btn-danger w-100 mt-3" onclick="closeDetails()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <p class="text-center text-muted">No orders placed yet.</p>
+    {% endif %}
+</div>
+
+<!-- 🟠 JavaScript to Fetch and Display Order Details -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll(".view-order-btn").forEach(button => {
+        button.addEventListener("click", function() {
+            let orderId = this.getAttribute("data-order-id");
+
+            fetch(`/order_details/${orderId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+
+                    // Fill Order Details
+                    document.getElementById("order-id").textContent = data.id;
+                    document.getElementById("customer-name").textContent = data.user;
+                    document.getElementById("order-status").textContent = data.status;
+                    document.getElementById("order-price").textContent = data.total_price;
+
+                    // Badge Color Logic
+                    let statusBadge = document.getElementById("order-status");
+                    statusBadge.className = "badge";
+                    if (data.status === "Delivered") statusBadge.classList.add("bg-success");
+                    else if (data.status === "Out for Delivery") statusBadge.classList.add("bg-info");
+                    else if (data.status === "Being Prepared") statusBadge.classList.add("bg-warning");
+                    else statusBadge.classList.add("bg-secondary");
+
+                    // Fill Items List
+                    let itemsList = document.getElementById("order-items");
+                    itemsList.innerHTML = ""; // Clear previous items
+                    data.items.forEach(item => {
+                        let li = document.createElement("li");
+                        li.className = "list-group-item d-flex justify-content-between align-items-center";
+                        li.innerHTML = `${item.name} (x${item.quantity}) <span class="badge bg-primary">₹${item.price}</span>`;
+                        itemsList.appendChild(li);
+                    });
+
+                    // Show Order Details Section
+                    document.getElementById("order-details").classList.remove("d-none");
+                })
+                .catch(error => console.error("Error fetching order details:", error));
+        });
+    });
+});
+
+// Close Order Details
+function closeDetails() {
+    document.getElementById("order-details").classList.add("d-none");
+}
+</script>
+{% endblock %}

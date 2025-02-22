@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<div class="container mt-5" style="margin-top: 15vh !important;">
+    <h2 class="mb-4 text-center text-primary" style="font-size: 6vh !important;">{{ restaurant.rname }} Menu</h2>
+
+    <!-- Search bar -->
+    <div class="mb-4 d-flex justify-content-center">
+        <input type="text" id="search-bar" class="form-control w-50" placeholder="Search menu..." onkeyup="searchMenu()">
+    </div>
+
+    {% if menu_items %}
+    <div class="row d-flex flex-column align-items-center" id="menu-container">
+        {% for item in menu_items %}
+        <div class="col-10 mb-4 menu-item" data-name="{{ item.name|lower }}">
+            <div class="d-flex shadow-lg border-0 rounded-4 p-3 align-items-center position-relative" style="background-color: #f8f9fa; border-left: 8px solid {% if 'chicken' in item.name|lower %}red{% else %}green{% endif %};">
+                <div class="flex-grow-1">
+                    <h5 class="fw-bold text-dark">{{ item.name }}</h5>
+                    <p class="text-success fs-5 fw-semibold">₹{{ item.price }}</p>
+                </div>
+                <div class="text-center">
+                    <img src="{{ item.image_url }}" class="rounded-4" alt="{{ item.name }}" style="height: 120px; width: 120px; object-fit: cover;">
+                    <form method="POST" action="{{ url_for('add_to_cart') }}" class="mt-2" id="form-{{ item.id }}">
+                        <input type="hidden" name="item_id" value="{{ item.id }}">
+                        <input type="hidden" name="name" value="{{ item.name }}">
+                        <input type="hidden" name="price" value="{{ item.price }}">
+
+                        <button id="order-button-{{ item.id }}" type="button" class="btn btn-primary px-4 py-2 mt-2 rounded-pill" onclick="toggleQuantity('{{ item.id }}')">
+                            🛒 Order Now
+                        </button>
+
+                        <!-- Quantity selection container -->
+                        <div id="quantity-container-{{ item.id }}" class="d-none mt-2 d-flex justify-content-center align-items-center">
+                            <button type="button" class="btn btn-outline-danger btn-sm me-2" onclick="updateQuantity('{{ item.id }}', -1)">➖</button>
+                            <input type="number" id="quantity-{{ item.id }}" name="quantity_{{ item.id }}" value="1" min="1" max="5" class="text-center border-0" style="width: 40px;">
+                            <button type="button" class="btn btn-outline-success btn-sm ms-2" onclick="updateQuantity('{{ item.id }}', 1)">➕</button>
+                        </div>
+
+                        <!-- Hidden submit button (will appear after toggling quantity) -->
+                        <button id="submit-button-{{ item.id }}" type="submit" class="d-none" style="background-color:#ff5200;height: 5vh;width: 7vw;border-radius: 20px;color: white;margin-top: 20px;">Add to cart</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <p class="text-center text-muted">No menu items available.</p>
+    {% endif %}
+</div>
+
+<script>
+    function searchMenu() {
+        let query = document.getElementById('search-bar').value.toLowerCase();
+        let items = document.querySelectorAll('.menu-item');
+        
+        items.forEach(item => {
+            let itemName = item.getAttribute('data-name');
+            if (itemName.includes(query)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    function updateQuantity(itemId, change) {
+        let quantityInput = document.getElementById(`quantity-${itemId}`);
+        let currentQuantity = parseInt(quantityInput.value);
+        let newQuantity = Math.max(1, Math.min(5, currentQuantity + change));
+        quantityInput.value = newQuantity;
+    }
+
+    function toggleQuantity(itemId) {
+        let quantityContainer = document.getElementById(`quantity-container-${itemId}`);
+        let orderButton = document.querySelector(`#order-button-${itemId}`);
+        let form = document.querySelector(`#form-${itemId}`);
+        let submitButton = document.querySelector(`#submit-button-${itemId}`);
+
+        // Start the animation to shrink the "Order Now" button
+        orderButton.style.transition = "all 0.4s ease-out";
+        orderButton.style.transform = "scale(0)";
+        orderButton.style.opacity = "0";
+
+        // After the button animation ends, hide it and show the quantity container
+        setTimeout(function() {
+            orderButton.style.display = "none"; // Remove the button's space
+            quantityContainer.classList.remove('d-none');
+            quantityContainer.style.transition = "opacity 0.4s ease-in";
+            quantityContainer.style.opacity = "1";
+
+            // Change button text to "Add to Cart" and add click handler to submit form
+            submitButton.classList.remove('d-none');
+            orderButton.setAttribute("onclick", "submitForm('" + itemId + "')");
+        }, 500); // Wait for 0.5 seconds for the shrink animation
+    }
+
+    function submitForm(itemId) {
+        let form = document.querySelector(`#form-${itemId}`);
+        let quantityInput = document.getElementById(`quantity-${itemId}`);
+        let quantity = quantityInput.value;
+
+        // Create hidden input field to send quantity
+        let quantityHidden = document.createElement('input');
+        quantityHidden.type = 'hidden';
+        quantityHidden.name = `quantity_${itemId}`;
+        quantityHidden.value = quantity;
+        form.appendChild(quantityHidden);
+
+        // Submit the form
+        form.submit();
+    }
+</script>
+
+{% endblock %}

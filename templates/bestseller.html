@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}Gulli Ka Dhaba | Bestseller {% endblock %}
+{% block style %}
+<style>
+        
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body{
+        background-color: #D2D2D2;
+        background-image: url(../static/images/bg.png)
+        repeating-linear-gradient(
+            to right, transparent 0 100px,
+            #25283b22 100px 101px
+        ),
+        repeating-linear-gradient(
+            to bottom, transparent 0 100px,
+            #25283b22 100px 101px
+        );
+    }
+    
+    body::before{
+        position: absolute;
+        width: min(1400px, 90vw);
+        top: 10%;
+        left: 50%;
+        height: 90%;
+        transform: translateX(-50%);
+        content: '';
+        background-image: url(bg.png);
+        background-size: 100%;
+        background-repeat: no-repeat;
+        background-position: top center;
+        pointer-events: none;
+    }
+</style>
+<link rel="stylesheet" href="../static/css/bestseller.css">
+{% endblock %}
+
+{% block main %}  
+
+
+    
+
+<main style="height:100vh;width: 100vw;">
+    <div class="banner">
+        <div class="slider" style="--quantity: 10">
+            <div class="item" style="--position: 1">
+                <a href="{{ url_for('index')}}"><img src="https://i.pinimg.com/474x/28/e4/d6/28e4d6570eab3795ae98ce7809076c75.jpg" alt=""></a>
+                <div class="image-name">Food 1</div>
+            </div>
+            <div class="item" style="--position: 2">
+                <a href="{{url_for('index')}}"><img src="https://i.pinimg.com/474x/2b/64/e1/2b64e15ac11687bb3074b9f7abc87edd.jpg" alt=""></a>
+                <div class="image-name">Food 2</div>
+            </div>
+            <div class="item" style="--position: 3">
+                <a href="{{url_for('index')}}"><img src="https://i.pinimg.com/474x/ff/b8/e8/ffb8e8c94bf6210bf383e050520b00cf.jpg" alt=""></a>
+                <div class="image-name">Food 3</div>
+            </div>
+            <div class="item" style="--position: 4">
+                <a href="{{url_for('index')}}"><img src="https://i.pinimg.com/474x/c0/7f/d5/c07fd509ed6a0e23950d24360fb54daa.jpg" alt=""></a>
+                <div class="image-name">Food 4</div>
+            </div>
+            <div class="item" style="--position: 5">
+                <a href="{{url_for('index')}}"><img src="https://i.pinimg.com/474x/85/20/50/8520506e38ed9da4627336e1b9837c5f.jpg" alt=""></a>
+                <div class="image-name">Food 5</div>
+            </div>
+            <div class="item" style="--position: 6">
+                <a href="{{url_for('index')}}"><img src="https://i.pinimg.com/474x/e5/fc/59/e5fc59c732ae0e62ba9ef1cc6e3786e7.jpg" alt=""></a>
+                <div class="image-name">Food 6</div>
+            </div>
+            <div class="item" style="--position: 7">
+                <a href="{{url_for('index')}}"><img src="https://i.pinimg.com/474x/ed/91/b2/ed91b2abb01646546a21c62d42a6049d.jpg" alt=""></a>
+                <div class="image-name">Food 7</div>
+            </div>
+            <div class="item" style="--position: 8">
+                <a href="{{url_for('index')}}"><img src="https://i.pinimg.com/474x/92/4d/da/924ddab4f7ad7192b593baab3603c1d5.jpg" alt=""></a>
+                <div class="image-name">Food 8</div>
+            </div>
+            <div class="item" style="--position: 9">
+                <a href="{{url_for('index')}}"><img src="https://i.pinimg.com/474x/4f/c7/66/4fc7665dfa4e883d9c6af0b14125c390.jpg" alt=""></a>
+                <div class="image-name"  >Food 9</div>
+            </div>
+            <div class="item" style="--position: 10">
+                <a href="{{url_for('index')}}"><img src="https://i.pinimg.com/474x/1b/da/ca/1bdaca54b40441bc8a1bccc733e3ca43.jpg" alt=""></a>
+                <div class="image-name">Food 10</div>
+            </div>
+        </div>
+        <div class="content">
+            <h1 data-content="Best Seller">
+                Best Seller
+            </h1>
+            <div class="author">
+                <h2>Restaurent_Name</h2>
+                <p>Lorem ipsum dolor sit amet.</p>
+                <p>
+                    Lorem ipsum dolor sit amet consectetur.
+                </p>
+            </div>
+            <div class="model"></div>
+        </div>
+    </div>
+</main>
+
+
+{% endblock %}
+
+

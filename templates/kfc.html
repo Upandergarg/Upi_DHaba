@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gulli Ka Dhaba</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: background 0.5s ease-in-out;
+            background: #e52d2d;
+        }
+
+        /* Navbar Styling */
+        header {
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+
+        .container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .food-image {
+            width: 300px;
+            display: block;
+            position: relative;
+            z-index: 2;
+            transition: transform 0.1s ease-out, opacity 0.5s ease-in-out;
+            /* transition: transform 0.1s ease-out; */
+        }
+
+        /* Brand Text */
+        .brand-text {
+            font-size: clamp(40px, 10vw, 80px);
+            font-weight: bold;
+            color: #fff;
+            position: absolute;
+            top: -10%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            opacity: 0.8;
+            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
+            transition: opacity 0.5s ease-in-out;
+            white-space: nowrap;
+        }
+
+        /* Navigation Arrows */
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+
+        .arrow-left {
+            left: 10%;
+        }
+
+        .arrow-right {
+            right: 10%;
+        }
+
+        .arrow:hover {
+            opacity: 0.7;
+        }
+
+        /* Button */
+        .button {
+            margin-top: 20px;
+            border: 2px solid #fff;
+            border-radius: 30px;
+            padding: 12px 24px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            background: white;
+            color: black;
+        }
+        /* 🌊 WAVE MORPHING BACKGROUND */
+@keyframes waveMorph {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+.wave-morph {
+    animation: waveMorph 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* 💥 PARTICLE BURST (Motion Blur + Smooth Scaling) */
+.particle {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    opacity: 1;
+    filter: blur(2px);
+    transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1), opacity 1s ease-out;
+    left: 50%;
+    top: 50%;
+}
+
+/* 🔥 GLASS SHATTER EFFECT (GPU-Optimized) */
+.glass-shard {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    background: white;
+    clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+    will-change: transform, opacity;
+    animation: glassBreak 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    left: 50%;
+    top: 50%;
+}
+
+@keyframes glassBreak {
+    0% {
+        transform: translate(0, 0) rotate(0deg) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--moveX), var(--moveY)) rotate(var(--rotate)) scale(0.3);
+        opacity: 0;
+    }
+}
+
+
+    </style>
+</head>
+<body id="background">
+
+    <!-- Navbar -->
+    <header>
+        <div class="text-4xl font-bold text-gray-800">
+            <span class="text-6xl">Gulli Ka Dhaba</span>
+        </div>
+        <nav class="hidden md:flex space-x-8 text-lg text-gray-800">
+            <a class="hover:underline font-bold" href="{{url_for('index')}}">Home</a>
+            <a class="hover:underline" href="{{url_for('about_us')}}">About Us</a>
+            <a class="hover:underline" href="{{url_for('my_orders')}}">My orders</a>
+        </nav>
+        <div class="md:hidden">
+            <button class="text-gray-800 text-2xl">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Centered Content -->
+    <div class="container">
+        <div class="arrow arrow-left" onclick="changeBrand(-1)">&#8249;</div>  <!-- Left Arrow -->
+        <div id="brandText" class="brand-text">KFC</div> <!-- Brand Name -->
+        <img id="foodImage" src="https://upload.wikimedia.org/wikipedia/sco/thumb/b/bf/KFC_logo.svg/600px-KFC_logo.svg.png?20170615210441" alt="Food Image" class="food-image">
+        <div class="arrow arrow-right" onclick="changeBrand(1)">&#8250;</div>  <!-- Right Arrow -->
+    </div>
+
+    <button class="button"><a href="{{url_for('user_dashboard')}}">Place Your Order!</a></button>
+
+
+    <p class="text-xl text-white mt-4">Delicious food from your favorite brands</p>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+    // List of brands
+    const brands = [
+        { name: "KFC", color: "#e52d2d", image: "https://upload.wikimedia.org/wikipedia/sco/thumb/b/bf/KFC_logo.svg/600px-KFC_logo.svg.png?20170615210441", orderPage: "main.html" },
+        { name: "McDonald's", color: "#ffcc00", image:"../static/images/mcd2.svg", orderPage: "order-mcdonalds.html" },
+        { name: "Domino's", color: "#0033a0", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Dominos_pizza_logo.svg/1024px-Dominos_pizza_logo.svg.png", orderPage: "order-dominos.html" },
+        { name: "Subway", color: "#008c45", image: "../static/images/subway.svg", orderPage: "order-subway.html" },
+        { name: "Pizza Hut", color: "#d50000", image: "../static/images/Pizzahut.svg", orderPage: "order-pizzahut.html" },
+        { name: "Burger King", color: "#f79e1b", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Burger_King_2020.svg/1099px-Burger_King_2020.svg.png", orderPage: "order-burgerking.html" },
+        { name: "Starbucks", color: "#006241", image: "https://upload.wikimedia.org/wikipedia/sco/thumb/d/d3/Starbucks_Corporation_Logo_2011.svg/594px-Starbucks_Corporation_Logo_2011.svg.png?20170312192423", orderPage: "order-starbucks.html" }
+    ];
+
+    let currentIndex = 0;
+
+    function changeBrand(direction) {
+        currentIndex += direction;
+        if (currentIndex < 0) currentIndex = brands.length - 1;
+        if (currentIndex >= brands.length) currentIndex = 0;
+
+        const brandText = document.getElementById("brandText");
+        const background = document.getElementById("background");
+        const foodImage = document.getElementById("foodImage");
+
+        // 🌊 Wave effect
+        background.classList.add("wave-morph");
+
+        // 💥 Particle explosion
+        for (let i = 0; i < 20; i++) {
+            let particle = document.createElement("div");
+            particle.classList.add("particle");
+            let randomX = (Math.random() - 0.5) * 500;
+            let randomY = (Math.random() - 0.5) * 500;
+            let randomSize = Math.random() * 15 + 5;
+
+            particle.style.width = `${randomSize}px`;
+            particle.style.height = `${randomSize}px`;
+            particle.style.transform = `translate(${randomX}px, ${randomY}px) scale(${Math.random() * 1.5})`;
+            particle.style.background = brands[currentIndex].color;
+
+            document.body.appendChild(particle);
+            setTimeout(() => particle.remove(), 1200);
+        }
+
+        // 🔥 Glass shatter
+        for (let i = 0; i < 10; i++) {
+            let shard = document.createElement("div");
+            shard.classList.add("glass-shard");
+
+            let randomX = (Math.random() - 0.5) * 350;
+            let randomY = (Math.random() - 0.5) * 350;
+            let randomRotation = Math.random() * 1440;
+
+            shard.style.setProperty("--moveX", `${randomX}px`);
+            shard.style.setProperty("--moveY", `${randomY}px`);
+            shard.style.setProperty("--rotate", `${randomRotation}deg`);
+            shard.style.background = brands[currentIndex].color;
+
+            document.body.appendChild(shard);
+            setTimeout(() => shard.remove(), 1200);
+        }
+
+        // Update content after animation
+        setTimeout(() => {
+            background.style.background = brands[currentIndex].color;
+            brandText.textContent = brands[currentIndex].name;
+            foodImage.src = brands[currentIndex].image;
+            background.classList.remove("wave-morph");
+        }, 1000);
+    }
+
+    function redirectToOrder() {
+        const orderPage = brands[currentIndex].orderPage;
+        window.location.href = orderPage;
+    }
+
+    // Attach function to global scope
+    window.changeBrand = changeBrand;
+    window.redirectToOrder = redirectToOrder;
+
+    // Mouse move effect
+    const cake = document.querySelector('.food-image');
+
+    if (cake) {  // Ensure the element exists
+        document.addEventListener('mousemove', (e) => {
+            const { clientX: x, clientY: y } = e;
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+
+            // Calculate movement offset
+            const moveX = (x - centerX) * 0.02; 
+            const moveY = (y - centerY) * 0.02; 
+
+            // Apply transform to image
+            cake.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+    }
+});
+
+    </script>
+
+</body>
+</html> 

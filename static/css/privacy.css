@@ -1,0 +1,103 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #fff8e1; /* Light orange background */
+    background-image: url('https://www.example.com/your-background-image.jpg'); /* Replace with your image URL */
+    background-size: cover;
+    background-position: center center;
+    padding-top: 30px;
+    color: #343a40; /* Dark text for contrast */
+    position: relative; /* Set relative position to allow image positioning */
+}
+
+/* Corner Images */
+.corner-image {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    opacity: 0.7; /* Slight transparency */
+}
+
+.top-left {
+    top: 10px;
+    left: 10px;
+}
+
+.top-right {
+    top: 10px;
+    right: 10px;
+}
+
+.bottom-left {
+    bottom: 10px;
+    left: 10px;
+}
+
+.bottom-right {
+    bottom: 10px;
+    right: 10px;
+}
+
+/* Randomly Placed Images */
+.random-image {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    opacity: 0.7;
+}
+
+/* Additional styling for content sections */
+.section-heading {
+    font-weight: bold;
+    margin-top: 30px;
+    color: #ff7f32; /* Orange color for headings */
+}
+
+.content-section {
+    margin-bottom: 30px;
+    font-size: 1rem;
+    line-height: 1.6;
+    background-color: rgba(255, 255, 255, 0.8); /* Light background to improve readability */
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ff7f32; /* Orange border */
+    background-image: url('https://i.pinimg.com/474x/f0/4c/e5/f04ce58183054a35e3e0544d1ed58749.jpg'); /* Add background image here */
+    background-size: cover;
+    background-position: center;
+}
+
+.footer {
+    background-color: #ff7f32; /* Orange background */
+    padding: 20px 0;
+    text-align: center;
+}
+
+.footer p {
+    color: #fff; /* White text for footer */
+}
+
+.text-muted {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+h1, h3 {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+p, ul {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+a {
+    color: #ff7f32; /* Orange color for links */
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #e65c00; /* Darker orange on hover */
+}
+
+img {
+    border-radius: 50%;
+}

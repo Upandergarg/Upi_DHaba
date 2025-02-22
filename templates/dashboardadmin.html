@@ -1,0 +1,127 @@
+{% extends "admin_dashboard.html" %}
+
+{% block main %}
+<style>
+    .content-wrapper {
+        margin-left: 260px; /* Adjust for sidebar width */
+        padding: 50px;
+        min-height: 100vh;
+        width: calc(100vw - 260px);
+        background-color: #1e1e2f; /* Dark background */
+        color: #ffffff;
+        text-align: center;
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+
+    p {
+        font-size: 1.2rem;
+        color: #b0b0b0;
+    }
+
+    .welcome-box {
+        background: #29293d;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Profile Icon */
+    .profile-icon {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: url('https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png') no-repeat center/cover;
+        cursor: pointer;
+        border: 2px solid #ffffff;
+        transition: 0.3s;
+    }
+
+    .profile-icon:hover {
+        border-color: #007bff;
+    }
+
+    /* Profile Popup */
+    .profile-popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #29293d;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        min-width: 300px;
+    }
+
+    .profile-popup img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        margin-bottom: 10px;
+    }
+
+    .profile-popup h4 {
+        margin: 10px 0;
+        font-size: 1.5rem;
+        color: #ffffff;
+    }
+
+    .profile-popup p {
+        font-size: 1rem;
+        color: #b0b0b0;
+        margin: 5px 0;
+    }
+
+    .close-btn {
+        margin-top: 15px;
+        padding: 8px 20px;
+        background: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .close-btn:hover {
+        background: #b02a37;
+    }
+</style>
+
+<div class="content-wrapper d-flex justify-content-center align-items-center">
+    <div class="welcome-box">
+        <h1>Welcome, Admin! 👋</h1>
+        <p>Manage orders, users, and more with ease.</p>
+    </div>
+
+    <!-- Profile Icon -->
+    <div class="profile-icon" onclick="toggleProfilePopup()"></div>
+</div>
+
+<!-- Profile Popup -->
+<div id="profile-popup" class="profile-popup">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png" alt="Profile Picture">
+    <h4>{{ current_user.name }}</h4>
+    <p><strong>📞 Phone:</strong> {{ current_user.mobile }}</p>
+    <p><strong>✉ Email:</strong> {{ current_user.email }}</p>
+    <button class="close-btn" onclick="toggleProfilePopup()">Close</button>
+</div>
+
+<script>
+    function toggleProfilePopup() {
+        var popup = document.getElementById("profile-popup");
+        popup.style.display = (popup.style.display === "block") ? "none" : "block";
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<div class="container mt-5" style="margin-top: 15vh !important;">
+    <h2 class="text-center text-primary">🛒 Your Cart</h2>
+
+    {% if cart_items %}
+        <div class="mt-4">
+            {% for item in cart_items %}
+            <div class="card mb-3 p-3 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-1">{{ item.menu_item.name }}</h5>
+                        <p class="text-muted">₹{{ item.menu_item.price }} x {{ item.quantity }}</p>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <form action="{{ url_for('update_cart', item_id=item.id) }}" method="post">
+                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="5" class="form-control" style="width: 80px; display:inline;">
+                            <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                        </form>
+                        
+                        <form action="{{ url_for('remove_from_cart', item_id=item.id) }}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-danger btn-sm ml-2" onclick="return confirm('Remove {{ item.menu_item.name }} from cart?')">🗑</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Styled Bill Summary -->
+<div class="card mt-4 p-4 shadow-lg" style="max-width: 400px; margin: auto; border: 2px dashed #007bff;">
+    <h4 class="text-center text-primary">🧾 Bill Receipt</h4>
+    <hr>
+    <div style="font-family: 'Courier New', Courier, monospace; font-size: 14px;">
+        <p><strong>Date:</strong> {{ current_date }}</p>
+        <p><strong>Order ID:</strong> #{{ order_id }}</p>
+        <hr>
+        <table class="table table-borderless">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Qty</th>
+                    <th>Price (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.menu_item.name }}</td>
+                    <td>x{{ item.quantity }}</td>
+                    <td>{{ item.menu_item.price * item.quantity }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <hr>
+        <h5 class="text-end"><strong>Total: ₹{{ total_price }}</strong></h5>
+        <p class="text-center text-muted mt-2">Thank you for your order! 😊</p>
+    </div>
+</div>
+
+
+            <div class="text-center mt-4">
+                <form action="{{ url_for('checkout') }}" method="post">
+                    <button type="submit" class="btn btn-success px-5 py-2 rounded-pill" onclick="return confirm('Proceed to checkout')">✅ Proceed to Checkout</button>
+                </form>
+            </div>
+        </div>
+    {% else %}
+        <p class="text-center text-muted mt-4">Your cart is empty. Start adding delicious food! 🍔🍕</p>
+    {% endif %}
+</div>
+{% endblock %}

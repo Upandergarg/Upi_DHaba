@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            background-color: #f4f4f4;
+        }
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background-color: #343a40;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            overflow-y: auto;
+        }
+        .sidebar a {
+            display: block;
+            padding: 10px;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .sidebar a:hover {
+            background-color: #495057;
+            border-radius: 5px;
+        }
+        .content {
+            margin-left: 270px;
+            flex-grow: 1;
+            padding: 20px;
+        }
+        .restaurant-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .restaurant-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .restaurant-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        #searchInput {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+        .change-address-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            z-index: 1000;
+            width: 300px;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="text-center">
+            <a href="{{url_for('index')}}"><img src="../static/images/logo.png" alt="Logo" class="img-fluid" style="height: 100px; width: 150px;"></a>
+            <p class="mt-2 font-weight-bold">Address: {{ current_user.address }} </p>
+            <button class="btn btn-sm btn-warning ml-2" onclick="showChangeAddress()">Change Address</button>
+
+        </div>
+        <hr>
+        <input type="text" id="searchInput" placeholder="Search restaurants..." onkeyup="searchRestaurants()">
+        <a href="{{ url_for('my_orders') }}"><i class="fas fa-tags"></i> My Orders </a>
+        <a href="{{ url_for('logout') }}"><i class="fas fa-user"></i> Logout</a>
+        <a href="{{url_for('cart')}}"><i class="fas fa-shopping-cart"></i> Cart</a>
+        {% if current_user.role=="admin" %}
+        <a href="{{url_for('admin_dashboard')}}"><i class="fas fa-user"></i>Admin Panel</a>
+
+            
+        {% endif %}
+    </nav>
+
+    <div class="overlay" id="overlay" onclick="hideChangeAddress()"></div>
+
+    <div class="change-address-container" id="changeAddressContainer">
+        <h5 class="text-center">Change Address</h5>
+        <form action="{{ url_for('change_address') }}" method="POST">
+            <input type="text" class="form-control mb-2" name="new_address" placeholder="Enter new address" required>
+            <div class="text-center">
+                <button type="submit" class="btn btn-success">Save</button>
+                <button type="button" class="btn btn-danger" onclick="hideChangeAddress()">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="content">
+        <section>
+            <h2 class="font-weight-bold mb-4">Restaurant chains in {{ current_user.city }}</h2>
+            <div class="d-flex flex-wrap" id="restaurantList">
+                {% set default_restaurants = [
+                    {'name': "Domino's Pizza", 'image': "https://images.ctfassets.net/cpumif18y1gd/1sGbO318eDg701zOdI8psj/40d44f067e5611915aea44040bb9625a/Dominos_-_625x417_2.jpg"},
+                    {'name': "Subway", 'image': "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqFPyg6N-Z51ndufYvBvyN-oUe8tMc4IxOrw&s"},
+                    {'name': "McDonald's", 'image': "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/McDonald%27s_square_2020.svg/1200px-McDonald%27s_square_2020.svg.png"},
+                    {'name': "KFC", 'image': "https://upload.wikimedia.org/wikipedia/sco/thumb/b/bf/KFC_logo.svg/1200px-KFC_logo.svg.png"}
+                ] %}
+                
+                {% for rest in default_restaurants %}
+                <div class="card mx-2 mb-3 restaurant-card" style="width: 16rem; cursor: pointer;">
+                    <img src="{{ rest.image }}" class="restaurant-img" alt="{{ rest.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title restaurant-name">{{ rest.name }}</h5>
+                        <p class="card-text">Available in {{ current_user.city }}</p>
+                        {% if current_user.role == 'admin' %}
+                            <button class="btn btn-danger btn-sm">Delete</button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                
+                <!-- Dynamically Loaded Restaurants -->
+                
+                {% for restaurant in restaurants %}
+                <a href="{{ url_for('view_menu', restaurant_id=restaurant['rid']) }}" class="text-decoration-none text-dark">
+                    <div class="card mx-2 mb-3 restaurant-card" style="width: 16rem; cursor: pointer;">
+                        <img src="{{ url_for('static', filename='uploads/' + restaurant['image_filename']) }}" class="restaurant-img" alt="{{ restaurant['rname'] }}">
+                        <div class="card-body">
+                            <h5 class="card-title restaurant-name">{{ restaurant['rname'] }}</h5>
+                            <p class="card-text">Available in {{ restaurant['raddress'] }}</p>
+                            {% if current_user.role == 'admin' %}
+                                <a href="{{ url_for('edit_restaurant', rid=restaurant.rid) }} " class="btn btn-warning btn-sm">Edit Restaurant</a>
+                                <a href="{{ url_for('edit_menu', restaurant_id=restaurant.rid) }}" class="btn btn-warning btn-sm">Edit Menu</a>
+                                <form action="{{ url_for('delete_restaurant', rid=restaurant.rid) }}" method="POST">
+                                    <button type="submit" class="btn btn-danger">Delete Restaurant</button>
+                                </form>
+                                
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+            
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function searchRestaurants() {
+            let input = document.getElementById("searchInput").value.toLowerCase();
+            let restaurantCards = document.getElementsByClassName("restaurant-card");
+            for (let i = 0; i < restaurantCards.length; i++) {
+                let name = restaurantCards[i].getElementsByClassName("restaurant-name")[0].innerText.toLowerCase();
+                restaurantCards[i].style.display = name.includes(input) ? "block" : "none";
+            }
+        }
+
+        function showChangeAddress() {
+            document.getElementById("changeAddressContainer").style.display = "block";
+            document.getElementById("overlay").style.display = "block";
+        }
+
+        function hideChangeAddress() {
+            document.getElementById("changeAddressContainer").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Gulli Ka Dhaba | Home{% endblock %}
+
+{% block style %}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+
+    main {
+        font-family: 'Roboto', sans-serif;
+        background-color: black;
+        color: white;
+    }
+    .emoji {
+        font-size: 2rem;
+    }
+    footer {
+        display: none;
+    }
+
+</style>
+
+    
+{% endblock %}
+
+{% block main %}
+<main>
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="display-4 fw-bold mb-4"> Grab Big Deals on <span class="text-warning">Yummy Meals!</span></h1>
+                <p class="text-secondary mb-4">Lorem ipsum dolor sit amet consectetur. Aenean mau risnam tortor curabitur phasellus.</p>
+                <button class="btn btn-warning text-black fw-bold mb-4" onclick="redirectToSignup()">Get Started</button>
+
+                <div class="d-flex align-items-center">
+                    <img src="https://storage.googleapis.com/a1aa/image/ENsMQcYpuFTrtcg5s9vVQGyemZUYJFirFxvw_ctAueQ.jpg" alt="Profile picture of Jon Williamson" class="rounded-circle me-3" width="40" height="40">
+                    <div>
+                        <p class="fw-bold mb-0" >Jon Williamson</p>
+                        <p class="text-secondary mb-0">Food Courier</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 position-relative mt-4 mt-md-0">
+                <img src="https://storage.googleapis.com/a1aa/image/cungj4X4gbPzw0xDEq_pC-GS9Ggs5aaVD0Itio4ZSj0.jpg" alt="Delicious roasted chicken with lemon and herbs" class="img-fluid rounded">
+                <div class="position-absolute bottom-0 end-0 bg-dark bg-opacity-75 p-3 rounded">
+                    <img src="https://storage.googleapis.com/a1aa/image/RcxiljxkL5Or6z5fsq7sAByFyGjEBbg6rgfhKfZnmyc.jpg" alt="Cheese Pizza" class="img-fluid rounded mb-2" width="60" height="60">
+                    <p class="fw-bold mb-0">Cheese Pizza</p>
+                    <p class="text-warning mb-0">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </p>
+                    <p class="fw-bold mb-0">₹299/-</p>
+                </div>
+            </div>
+        </div>
+        <div class="mt-5 d-flex align-items-center">
+            <div class="d-flex me-3">
+                <img src="https://storage.googleapis.com/a1aa/image/1BhwNUbGAFu6dlFx7qFl0YyEWRST2w_bGuR8itmYDxM.jpg" alt="Happy customer 1" class="rounded-circle border border-dark me-1" width="40" height="40">
+                <img src="https://storage.googleapis.com/a1aa/image/n8V0fWppn5B3bVDDiX_Pgy3tXetQRE5n9XlXgiKoSrQ.jpg" alt="Happy customer 2" class="rounded-circle border border-dark me-1" width="40" height="40">
+                <img src="https://storage.googleapis.com/a1aa/image/qWdaKKsyHpzQ6r4KqCQLHmS55kgsbhim9-X5mHc_I7k.jpg" alt="Happy customer 3" class="rounded-circle border border-dark" width="40" height="40">
+            </div>
+            <div>
+                <p class="fw-bold mb-0">Our Happy Customers</p>
+                <p class="text-warning mb-0">
+                    <i class="fas fa-star"></i>
+                    4.8 <span class="text-secondary">(18.5k Reviews)</span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="position-absolute top-0 end-0 emoji">
+        <span>😋</span>
+    </div>
+    <div class="position-absolute top-50 start-0 emoji">
+        <span>🔥</span>
+    </div>
+    <div class="position-absolute bottom-0 start-50 emoji">
+        <span>😍</span>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script>
+        function redirectToSignup() {
+            window.location.href = "{{ url_for('signup') }}";
+        }
+    </script>
+
+
+</main>
+    
+{% endblock %}
